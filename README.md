@@ -80,6 +80,7 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
      ```
 
 5. **Step 5: Monitoring Logs**
+   
    To troubleshoot issues and monitor logs for each service:
    - View logs for all services:
      ```bash
@@ -92,6 +93,7 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    - Stop monitoring logs by pressing `Ctrl+C`.
 
 6. **Step 6: Stopping Services**
+   
    To stop all running services:
    ```bash
    docker-compose down
