@@ -31,12 +31,11 @@ The platform utilizes PostgreSQL for database management and Redis for caching, 
   - `requirements.txt`: Lists dependencies for the project.
   - `backend_redis/`: Contains the core backend logic, configuration files, and routes for the application.
 
-### 3. **Frontend**
+### 3. **Step 3: Frontend**
 - **Purpose**: Provides a static user interface.
 - **Files**:
   - `index.html`: Main HTML file for the static frontend.
-  - `style.css`: Stylesheet for frontend design.
-  - `frontend/`: Contains static assets, configuration files, and additional frontend resources.
+  - `config.json`: Contains URLs for the backend.
 
 ## Lifehacks
 
@@ -49,6 +48,24 @@ Initially, use it to understand the diagram, all the interconnections on it, and
 Next, use it when taking courses to find the information you need for the project's implementation. Use it here to deepen your understanding, create more examples and analogies. Break concepts into the simplest levels of abstraction and show maximum creativity when working with it.
 
 Refer back to the course we took initially (about ChatGPT), recall the methods and strategies of prompts, and use them. Your main task is not just to implement the project but to learn how to break down new information into the simplest pieces with ChatGPT and build understanding as quickly as possible.
+
+## Deployment
+
+**Important:** Do not modify the code. The code is written correctly, and your task is to deploy it to fulfill the project requirements. Therefore, there is no need to add or rewrite code as it is already functional.
+
+### Backend Services
+- Deploy the backend (backend_rds, backend_redis) services using EC2 as specified in the architecture diagram.
+
+### Frontend
+- Deploy the static frontend service using Amazon S3 and CloudFront as specified in the architecture diagram.
+
+### Dockerization
+
+- All services should be containerized using Docker to ensure ease of scaling and deployment.
+
+### CI/CD Process
+
+- Implement separate CI/CD pipelines for backend and frontend deployment to automate the process effectively.
 
 ## Steps to Dockerize the Code
 
@@ -70,7 +87,15 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
 
 3. **Step 3: Creating docker-compose.yml and Environment Variables**
    
-   Write a `docker-compose.yml` file to define how the services interact and to simplify the orchestration process.
+   Write a `docker-compose.yml` file to define all the services, including Redis, PostgreSQL, and backend services. Include the following:
+
+   - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub link](https://hub.docker.com/_/redis)).
+   - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub link](https://hub.docker.com/_/postgres)).
+   - **Backend Services**:
+     - **`backend-rds`**: This service should depend on PostgreSQL and include environment variables like `DATABASE_URL`.
+     - **`backend-redis`**: This service should depend on Redis and include environment variables like `REDIS_URL`.
+
+  Make sure to place the corresponding `Dockerfile` for each backend service in the correct directory.
 
 4. **Step 4: Building and Running Services**
    
@@ -92,28 +117,25 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
      ```
    - Stop monitoring logs by pressing `Ctrl+C`.
 
-6. **Step 6: Stopping Services**
+
+6. **Step 6: Updating `config.json` to Test Frontend**
+
+   After starting the services, update the `config.json` file located in the frontend directory to match the backend service URLs:
+   - Example `config.json`:
+     ```json
+     {
+       "backend-rds-url": "http://localhost:5000",
+       "backend-redis-url": "http://localhost:5001"
+     }
+     ```
+   - Save the changes and ensure the frontend is pointing to the correct backend service URLs.
+
+7. **Step 7: Stopping Services**
    
    To stop all running services:
    ```bash
    docker-compose down
    ```
 
-## Deployment
 
-**Important:** Do not modify the code. The code is written correctly, and your task is to deploy it to fulfill the project requirements. Therefore, there is no need to add or rewrite code as it is already functional.
-
-### Backend Services
-- Deploy the backend (backend_rds, backend_redis) services using EC2 as specified in the architecture diagram.
-
-### Frontend
-- Deploy the static frontend service using Amazon S3 and CloudFront as specified in the architecture diagram.
-
-### Dockerization
-
-- All services should be containerized using Docker to ensure ease of scaling and deployment.
-
-### CI/CD Process
-
-- Implement separate CI/CD pipelines for backend and frontend deployment to automate the process effectively.
 
