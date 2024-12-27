@@ -89,11 +89,11 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    
    Write a `docker-compose.yml` file to define all the services, including Redis, PostgreSQL, and backend services. Include the following:
 
-   - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub link](https://hub.docker.com/_/redis)).
-   - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub link](https://hub.docker.com/_/postgres)).
-   - **Backend Services**:
-     - **`backend-rds`**: This service should depend on PostgreSQL and include environment variables like `DATABASE_URL`.
-     - **`backend-redis`**: This service should depend on Redis and include environment variables like `REDIS_URL`.
+    - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub link](https://hub.docker.com/_/redis)).
+    - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub link](https://hub.docker.com/_/postgres)).
+
+    - **backend-rds**: This service should depend on PostgreSQL.
+    - **backend-redis**: This service should depend on Redis.
 
   Make sure to place the corresponding `Dockerfile` for each backend service in the correct directory.
 
@@ -120,15 +120,9 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
 
 6. **Step 6: Updating `config.json` to Test Frontend**
 
-   After starting the services, update the `config.json` file located in the frontend directory to match the backend service URLs:
-   - Example `config.json`:
-     ```json
-     {
-       "backend-rds-url": "http://localhost:5000",
-       "backend-redis-url": "http://localhost:5001"
-     }
-     ```
-   - Save the changes and ensure the frontend is pointing to the correct backend service URLs.
+   After starting the services, update the `config.json` file located in the frontend directory to match the backend service URLs.
+   
+   Save the changes and ensure the frontend is pointing to the correct backend service URLs.
 
 7. **Step 7: Stopping Services**
    
