@@ -35,7 +35,6 @@ The platform utilizes PostgreSQL for database management and Redis for caching, 
 - **Purpose**: Provides a static user interface.
 - **Files**:
   - `index.html`: Main HTML file for the static frontend.
-  - `config.json`: Contains URLs for the backend.
 
 ## Lifehacks
 
@@ -67,7 +66,7 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
 
 - Implement separate CI/CD pipelines for backend and frontend deployment to automate the process effectively.
 
-## Steps to Dockerize the Code
+## Local testing
 
 1. **Step 1: Cloning the Repository**
 
@@ -82,6 +81,7 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    Write a `Dockerfile` for each service, including:
    - Backend RDS
    - Backend Redis
+   - Frontend with Nginx
 
    Ensure each `Dockerfile` is properly configured to build and run its respective service.
 
@@ -89,11 +89,13 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    
    Write a `docker-compose.yml` file to define all the services, including Redis, PostgreSQL, and backend services. Include the following:
 
-    - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub link](https://hub.docker.com/_/redis)).
-    - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub link](https://hub.docker.com/_/postgres)).
+    - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub](https://hub.docker.com/_/redis)).
+    - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub](https://hub.docker.com/_/postgres)).
 
     - **backend-rds**: This service should depend on PostgreSQL.
     - **backend-redis**: This service should depend on Redis.
+
+    - **Frontend**: Use the frontend `Dockerfile` built with Nginx.
 
   Make sure to place the corresponding `Dockerfile` for each backend service in the correct directory.
 
@@ -118,11 +120,9 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    - Stop monitoring logs by pressing `Ctrl+C`.
 
 
-6. **Step 6: Updating `config.json` to Test Frontend**
+6. **Step 6: Testing the Frontendd**
 
-   After starting the services, update the `config.json` file located in the frontend directory to match the backend service URLs.
-   
-   Save the changes and ensure the frontend is pointing to the correct backend service URLs.
+   After starting all services, verify that the frontend served by Nginx is accessible. 
 
 7. **Step 7: Stopping Services**
    
