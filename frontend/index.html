@@ -3,41 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend Service</title>
+    <title>F1 Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Test Connections</h1>
-    <button id="test-rds-btn">Test RDS Connection</button>
-    <button id="test-redis-btn">Test Redis Connection</button>
+    <div class="container">
+        <h1 class="mb-4 text-center">F1 Store</h1>
+        <form id="connection-form">
+            <div class="mb-3">
+                <label for="rds-url" class="form-label">RDS URL</label>
+                <input type="url" class="form-control" id="rds-url" placeholder="https://example.com/rds" required>
+                <div class="invalid-feedback">
+                    Будь ласка, введіть коректний URL.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="redis-url" class="form-label">Redis URL</label>
+                <input type="url" class="form-control" id="redis-url" placeholder="https://example.com/redis" required>
+                <div class="invalid-feedback">
+                    Будь ласка, введіть коректний URL.
+                </div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="button" id="test-connections-btn" class="btn btn-primary">Test Connections</button>
+            </div>
+        </form>
+        <div id="loader" class="text-center my-4" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div id="results" class="mt-4"></div>
+    </div>
 
-    <div id="results"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let BACKEND_RDS_URL;
-        let BACKEND_REDIS_URL;
-
-        async function loadConfig() {
-            const response = await fetch('config.json');
-            const config = await response.json();
-            BACKEND_RDS_URL = config.BACKEND_RDS_URL;
-            BACKEND_REDIS_URL = config.BACKEND_REDIS_URL;
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;  
+            }
         }
 
-        document.getElementById('test-rds-btn').addEventListener('click', function() {
-            fetch(BACKEND_RDS_URL)
-                .then(response => response.json())
-                .then(data => document.getElementById('results').innerText = JSON.stringify(data))
-                .catch(error => document.getElementById('results').innerText = 'Error: ' + error);
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            results.forEach(result => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = result.isError ? 'alert alert-danger' : 'alert alert-success';
+                alertDiv.innerHTML = `<strong>${result.label}:</strong> ${result.message}`;
+                resultsDiv.appendChild(alertDiv);
+            });
+        }
+
+
+        async function testConnections() {
+            const rdsUrlInput = document.getElementById('rds-url');
+            const redisUrlInput = document.getElementById('redis-url');
+            const rdsUrl = rdsUrlInput.value.trim();
+            const redisUrl = redisUrlInput.value.trim();
+
+            let hasError = false;
+            const results = [];
+
+
+            if (!isValidURL(rdsUrl)) {
+                rdsUrlInput.classList.add('is-invalid');
+                hasError = true;
+            } else {
+                rdsUrlInput.classList.remove('is-invalid');
+            }
+
+
+            if (!isValidURL(redisUrl)) {
+                redisUrlInput.classList.add('is-invalid');
+                hasError = true;
+            } else {
+                redisUrlInput.classList.remove('is-invalid');
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            showLoader();
+            displayResults([]); 
+
+            const fetchRDS = fetch(rdsUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`RDS: ${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    results.push({ label: 'RDS Connection', message: JSON.stringify(data, null, 2), isError: false });
+                })
+                .catch(error => {
+                    results.push({ label: 'RDS Connection', message: error.message, isError: true });
+                });
+
+            const fetchRedis = fetch(redisUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Redis: ${response.status} ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    results.push({ label: 'Redis Connection', message: JSON.stringify(data, null, 2), isError: false });
+                })
+                .catch(error => {
+                    results.push({ label: 'Redis Connection', message: error.message, isError: true });
+                });
+
+            await Promise.all([fetchRDS, fetchRedis]);
+
+            hideLoader();
+            displayResults(results);
+        }
+
+        document.getElementById('test-connections-btn').addEventListener('click', testConnections);
+
+        document.getElementById('rds-url').addEventListener('input', function() {
+            if (isValidURL(this.value.trim())) {
+                this.classList.remove('is-invalid');
+            }
         });
 
-        document.getElementById('test-redis-btn').addEventListener('click', function() {
-            fetch(BACKEND_REDIS_URL)
-                .then(response => response.json())
-                .then(data => document.getElementById('results').innerText = JSON.stringify(data))
-                .catch(error => document.getElementById('results').innerText = 'Error: ' + error);
+        document.getElementById('redis-url').addEventListener('input', function() {
+            if (isValidURL(this.value.trim())) {
+                this.classList.remove('is-invalid');
+            }
         });
-
-        window.onload = loadConfig;
     </script>
 </body>
 </html>
