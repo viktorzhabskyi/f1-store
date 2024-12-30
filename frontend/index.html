@@ -7,8 +7,10 @@
 
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: consolas;
         margin: 20px;
+        background-color: #3b435c;
+        color: #fff;
       }
       .container {
         max-width: 1024px;
@@ -18,11 +20,13 @@
       .form-group {
         width: 100%;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
         margin-bottom: 15px;
+        gap: 6px;
       }
+
       input {
         width: 100%;
         padding: 8px;
@@ -47,6 +51,7 @@
       button:disabled {
         background-color: #cccccc;
         cursor: not-allowed;
+        color: #999999;
       }
       .status {
         margin-top: 20px;
@@ -78,7 +83,7 @@
         }
       }
       .success {
-        color: green;
+        color: rgb(4, 179, 4);
       }
       .error {
         color: red;
@@ -94,29 +99,19 @@
         background-color: #ffe5e5;
       }
       .validation-error {
-        color: red;
+        color: rgb(255, 136, 0);
         font-size: 12px;
         text-align: left;
-      }
-      .error-message {
-        background-color: #ffe5e5;
-        padding: 10px;
-        border: 1px solid red;
-        border-radius: 4px;
-        color: red;
-        margin-top: 10px;
-      }
-      .error-title {
-        font-weight: bold;
-        margin-bottom: 5px;
+        text-transform: uppercase;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>F1 Store</h1>
+      <h1>F1 STORE</h1>
 
       <div class="form-group">
+        <label for="rds-url">RDS</label>
         <input
           type="url"
           class="form-control"
@@ -128,6 +123,7 @@
       </div>
 
       <div class="form-group">
+        <label for="redis-url">Redis</label>
         <input
           type="url"
           class="form-control"
@@ -144,22 +140,17 @@
       </div>
 
       <div class="status">
-        <div id="redisStatus">
-          <div class="loading" id="redisLoading"></div>
-          <span>Redis: <span id="redisResult">Idle</span></span>
-        </div>
         <div id="rdsStatus">
           <div class="loading" id="rdsLoading"></div>
           <span>RDS: <span id="rdsResult">Idle</span></span>
         </div>
+        <div id="redisStatus">
+          <div class="loading" id="redisLoading"></div>
+          <span>Redis: <span id="redisResult">Idle</span></span>
+        </div>
       </div>
 
-      <div id="errorLog" class="error-message" style="display: none">
-        <div id="rdsErrorTitle" class="error-title"></div>
-        <div id="rdsErrorText"></div>
-        <div id="redisErrorTitle" class="error-title"></div>
-        <div id="redisErrorText"></div>
-      </div>
+      <div id="errorLog" class="error-message" style="display: none"></div>
     </div>
 
     <script>
@@ -201,10 +192,6 @@
         const redisResult = document.getElementById('redisResult');
         const rdsResult = document.getElementById('rdsResult');
         const errorLog = document.getElementById('errorLog');
-        const rdsErrorTitle = document.getElementById('rdsErrorTitle');
-        const rdsErrorText = document.getElementById('rdsErrorText');
-        const redisErrorTitle = document.getElementById('redisErrorTitle');
-        const redisErrorText = document.getElementById('redisErrorText');
 
         let errorMessages = [];
 
@@ -212,24 +199,16 @@
           if (result.label === 'Redis Connection') {
             redisResult.textContent = result.message;
             redisResult.className = result.isError ? 'error' : 'success';
-            if (result.isError) {
-              redisErrorTitle.textContent = 'Redis Error';
-              redisErrorText.textContent = result.message;
-              errorMessages.push(result.message);
-            }
+            if (result.isError) errorMessages.push(result.message);
           } else if (result.label === 'RDS Connection') {
             rdsResult.textContent = result.message;
             rdsResult.className = result.isError ? 'error' : 'success';
-            if (result.isError) {
-              rdsErrorTitle.textContent = 'RDS Error';
-              rdsErrorText.textContent = result.message;
-              errorMessages.push(result.message);
-            }
+            if (result.isError) errorMessages.push(result.message);
           }
         });
 
         if (errorMessages.length > 0) {
-          errorLog.style.display = 'block';
+          errorLog.innerHTML = errorMessages.join('<br>');
         } else {
           errorLog.style.display = 'none';
         }
