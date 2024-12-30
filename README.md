@@ -89,13 +89,13 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    
    Write a `docker-compose.yml` file to define all the services, including Redis, PostgreSQL, and backend services. Include the following:
 
-    - **Redis**: Use the official Redis image from Docker Hub ([Redis Docker Hub](https://hub.docker.com/_/redis)).
-    - **PostgreSQL**: Use the official PostgreSQL image from Docker Hub ([PostgreSQL Docker Hub](https://hub.docker.com/_/postgres)).
+    - **Redis**: Use the official Redis image ([Redis Docker Hub](https://hub.docker.com/_/redis)).
+    - **PostgreSQL**: Use the official PostgreSQL image ([PostgreSQL Docker Hub](https://hub.docker.com/_/postgres)).
 
     - **backend-rds**: This service should depend on PostgreSQL.
     - **backend-redis**: This service should depend on Redis.
 
-    - **Frontend**: Use the frontend `Dockerfile` built with Nginx.
+    - **Frontend**: Use the frontend `Dockerfile` built with Nginx ([Nginx Docker Hub](https://hub.docker.com/_/nginx))..
 
   Make sure to place the corresponding `Dockerfile` for each backend service in the correct directory.
 
