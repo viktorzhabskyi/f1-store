@@ -130,6 +130,12 @@ Refer back to the course we took initially (about ChatGPT), recall the methods a
    ```bash
    docker-compose down
    ```
+## Final Thoughts
 
+Congratulations on completing your first project by deploying a simple EC2 instance integrated with S3 and CloudFront! This marks an important step in understanding the basics of cloud infrastructure and how to build a functional and accessible system. Keep learning, experimenting, and improving as you take your first steps into the world of cloud computing and DevOps.
+
+<p align="center">
+  <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHk2MGpqb3F4NWMwbzc5bGQ4emg0eTl1OWxoMDhtcWV2OGh5YWRnbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/10xZU9b7JBx14s/giphy.gif" width="50%">
+</p>  
 
 
