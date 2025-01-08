@@ -1,0 +1,47 @@
+name: Build and Push Docker Images to ECR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 638693734667.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker Images
+        run: |
+          docker build --platform linux/amd64 -f build/rds/Dockerfile -t 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_rds-latest .
+          docker build --platform linux/amd64 -f build/redis/Dockerfile -t 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_redis-latest .
+          
+      - name: Push Docker Images to ECR
+        run: |
+          docker push 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_redis-latest
+          docker push 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_rds-latest
+
+      - name: Connect to EC2 and run docker-compose
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker rmi -f 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_redis-latest
+            docker rmi -f 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_rds-latest
+            
+            docker-compose up -d
