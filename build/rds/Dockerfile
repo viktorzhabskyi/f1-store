@@ -1,8 +1,11 @@
-FROM python:3.12
+FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-distutils \
     python3-apt \
+    libpq-dev \
+    gcc \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip setuptools wheel

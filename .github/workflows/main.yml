@@ -1,4 +1,4 @@
-name: Build and Push Docker Images to ECR
+name: Deploy redis and rds to prod
 
 on:
   push:
@@ -41,6 +41,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            cd /home/ubuntu/workdir/build
+            
             docker rmi -f 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_redis-latest
             docker rmi -f 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_rds-latest
             

@@ -3,10 +3,7 @@ version: '3.8'
 services:
   # Backend Redis service
   backend_redis:
-    build:
-      context: ..
-      dockerfile: ./build/redis/Dockerfile
-    image: backend_redis:latest
+    image: 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_redis-latest
     container_name: backend_redis
     environment:
       SECRET_KEY: "SECRET_KEY"
@@ -24,10 +21,7 @@ services:
       - "8001:8000"
 
   backend_rds:
-    build:
-      context: ..
-      dockerfile: ./build/rds/Dockerfile
-    image: backend_rds:latest
+    image: 638693734667.dkr.ecr.us-east-1.amazonaws.com/f1-store:backend_rds-latest
     container_name: backend_rds
     depends_on:
       - redis
@@ -43,18 +37,18 @@ services:
     ports:
       - "8000:8000"
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ../frontend/index.html:/usr/share/nginx/html/index.html
-    depends_on:
-      - backend_redis
-      - backend_rds
-    ports:
-      - "80:80"
-    networks:
-      - backend_network
+#  nginx:
+#    image: nginx:latest
+#    container_name: nginx
+#    volumes:
+#      - ../frontend/index.html:/usr/share/nginx/html/index.html
+#    depends_on:
+#      - backend_redis
+#      - backend_rds
+#    ports:
+#      - "80:80"
+#    networks:
+#      - backend_network
 
   redis:
     image: redis:7.4.2
